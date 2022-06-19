@@ -1,7 +1,6 @@
 package com.jiaolin.controller;
 
 import org.redisson.Redisson;
-import org.redisson.RedissonLock;
 import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,8 +8,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.tools.Diagnostic;
-import java.util.UUID;
 
 /**
  * @author johnny
@@ -54,7 +51,10 @@ public class GoodController {
             return "商品已经售罄/活动结束/调用超时，欢迎下次光临" + "\t 服务器端口: " + serverPort;
 
         } finally {
-            redissonLock.unlock();
+            //还在持有锁的状态，并且是当前线程持有的锁再解锁
+            if (redissonLock.isLocked() && redissonLock.isHeldByCurrentThread()){
+                redissonLock.unlock();
+            }
         }
 
     }
