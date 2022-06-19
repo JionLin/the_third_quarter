@@ -15,6 +15,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 6。不能把他人的锁删除调 使用事务和lua 语言进行
  * 7。保证时间的可续性,redis过期时间大于业务执行时间,master宕机后,slave机收不到的问题
  * 8。使用官网推荐的redisson 进行 lock加锁问题。
+ *
+ * nginx weight=1 设置无效,正常是权重+轮询。后续查看。
+ * 上锁,redisson.getlock("获取的是一个常量") 获取锁 进行加锁
+ * finally的时候,需要判断是否还持有锁 并且是当前线程持有的锁 才进行unlock
  * @Date 2022/6/18 21:06
  */
 @SpringBootApplication
